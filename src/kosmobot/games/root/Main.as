@@ -35,7 +35,6 @@ package kosmobot.games.root
 			screen.addTile(new Tile(10, 30, 500, 10));
 			screen.addTile(new Tile(10, 50, 100, 10));
 			
-			screen.addTile(new Tile(160, 120, 320, 240));
 			
 			screen.initializeAreas();
 			

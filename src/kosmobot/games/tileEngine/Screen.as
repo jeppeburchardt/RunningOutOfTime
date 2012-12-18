@@ -13,8 +13,10 @@ package kosmobot.games.tileEngine
 		
 		private var areas : Array;
 		private var tiles : Vector.<Tile> = new Vector.<Tile>;
-		private var tilesInArea : Vector.<Tile>;
-		private var tilesInScreen : Vector.<Tile>;
+		private var tilesInAreas : Array;
+		private var tilesInScreen : Array = new Array();
+		private var currentAreaX:Number;
+		private var currentAreaY:Number;
 		
 		public function Screen(width:Number, height:Number) 
 		{
@@ -30,8 +32,9 @@ package kosmobot.games.tileEngine
 		{
 			areas = new Array();
 			
-			for each (var tile : Tile in tiles)
+			for (var i : int = 0; i < tiles.length; i++)
 			{
+				var tile = tiles[i];
 				var minXArea : Number = Math.floor(tile.position.left / renderArea.width);
 				var maxXArea : Number = Math.ceil(tile.position.right / renderArea.width);
 				var minYArea : Number = Math.floor(tile.position.top / renderArea.height);
@@ -48,26 +51,46 @@ package kosmobot.games.tileEngine
 							areas[x][y] = new Array();
 						}
 						
-						trace("adding tile " + tile.seed + " to area " + x + "," + y);
+						trace("adding tile " + i + " to area " + x + "," + y);
 						
-						areas[x][y].push(tile);
+						areas[x][y][i] = true;
 					}
 				}
 			}
 		}
 		
-		public function updateTilesInArea()
+		public function updateTilesInAreas() : void
 		{
+			tilesInAreas = new Array();
 			var posx = Math.floor(renderArea.x / renderArea.width);
 			var posy = Math.floor(renderArea.y / renderArea.height);
 			
-			for (var x : int = pox; x < posx + 1; x++ )
+			for (var x : int = posx; x < posx + 1; x++ )
 			{
-				for (var y : int = poy; y < posy + 1; y++ )
+				for (var y : int = posy; y < posy + 1; y++ )
 				{
-					for each (var tile in )
+					for (var n : String in areas[x][y])
 					{
-						
+						tilesInAreas[n] = true;
+					}
+				}
+			}
+			trace("updated tiles in areas (" + tilesInAreas.length + " tiles)");
+		}
+		
+		public function addTilesToScreen() : void
+		{
+			//this can be optimized...
+			for (var n : String in tilesInAreas) 
+			{
+				if (tilesInScreen[n] == null || !tilesInScreen[n]) 
+				{
+					var tile : Tile = tiles[n];
+					if (renderArea.intersects(tile.position))
+					{
+						addChild(tile);
+						tilesInScreen[n] = true;
+						trace("adding tile(" + n + ") to screen");
 					}
 				}
 			}
@@ -75,13 +98,25 @@ package kosmobot.games.tileEngine
 		
 		public function render() : void
 		{
+			var areaX : Number = Math.floor(renderArea.x / renderArea.width);
+			var areaY : Number = Math.floor(renderArea.y / renderArea.height);
+			
+			if (areaX != currentAreaX || areaY != currentAreaY) {
+				currentAreaX = areaX;
+				currentAreaY = areaY;
+				updateTilesInAreas();
+			}
+			
+			addTilesToScreen();
+			
 			graphics.clear();
 			graphics.lineStyle(0, 0xFF0000);
 			graphics.beginFill(0, 0);
 			graphics.drawRect(0, 0, renderArea.width, renderArea.height);
 			
-			for each(var tile : Tile in tilesInScreen)
+			for (var n : String in tilesInScreen)
 			{
+				var tile : Tile = tiles[n];
 				tile.render();
 			}
 		}
