@@ -1,6 +1,7 @@
 package kosmobot.games.tileEngine 
 {
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.geom.Rectangle;
 	
 	/**
@@ -9,10 +10,11 @@ package kosmobot.games.tileEngine
 	 */
 	public class Screen extends Sprite 
 	{
-		private var renderArea : Rectangle;
+		private var _renderArea : Rectangle;
 		
 		private var areas : Array;
 		private var tiles : Vector.<Tile> = new Vector.<Tile>;
+		private var tileContainer : Sprite;
 		private var tilesInAreas : Array;
 		private var tilesInScreen : Array = new Array();
 		private var currentAreaX:Number;
@@ -20,7 +22,9 @@ package kosmobot.games.tileEngine
 		
 		public function Screen(width:Number, height:Number) 
 		{
-			renderArea = new Rectangle(0, 0, width, height);
+			tileContainer = new Sprite();
+			addChild(tileContainer);
+			_renderArea = new Rectangle(0, 0, width, height);
 		}
 		
 		public function addTile(tile:Tile) : void
@@ -62,8 +66,8 @@ package kosmobot.games.tileEngine
 		public function updateTilesInAreas() : void
 		{
 			tilesInAreas = new Array();
-			var posx = Math.floor(renderArea.x / renderArea.width);
-			var posy = Math.floor(renderArea.y / renderArea.height);
+			var posx = Math.max(0, Math.floor(renderArea.x / renderArea.width));
+			var posy = Math.max(0, Math.floor(renderArea.y / renderArea.height));
 			
 			for (var x : int = posx; x < posx + 1; x++ )
 			{
@@ -88,7 +92,7 @@ package kosmobot.games.tileEngine
 					var tile : Tile = tiles[n];
 					if (renderArea.intersects(tile.position))
 					{
-						addChild(tile);
+						tileContainer.addChild(tile);
 						tilesInScreen[n] = true;
 						trace("adding tile(" + n + ") to screen");
 					}
@@ -98,10 +102,14 @@ package kosmobot.games.tileEngine
 		
 		public function render() : void
 		{
+			dispatchEvent(new Event(Event.RENDER));
+			
 			var areaX : Number = Math.floor(renderArea.x / renderArea.width);
 			var areaY : Number = Math.floor(renderArea.y / renderArea.height);
 			
 			if (areaX != currentAreaX || areaY != currentAreaY) {
+				
+				trace("new area " + areaX + " " + areaY);
 				currentAreaX = areaX;
 				currentAreaY = areaY;
 				updateTilesInAreas();
@@ -114,11 +122,24 @@ package kosmobot.games.tileEngine
 			graphics.beginFill(0, 0);
 			graphics.drawRect(0, 0, renderArea.width, renderArea.height);
 			
+			
 			for (var n : String in tilesInScreen)
 			{
 				var tile : Tile = tiles[n];
 				tile.render();
 			}
+			
+			tileContainer.x = -renderArea.x;
+			tileContainer.y = -renderArea.y;
+			tileContainer.graphics.clear();
+			tileContainer.graphics.lineStyle(0, 0x00FF00);
+			tileContainer.graphics.drawRect(areaX * renderArea.width, areaY * renderArea.height, renderArea.width, renderArea.height);
+			
+		}
+		
+		public function get renderArea():Rectangle 
+		{
+			return _renderArea;
 		}
 	}
 

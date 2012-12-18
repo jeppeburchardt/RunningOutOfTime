@@ -20,6 +20,9 @@ package kosmobot.games.tileEngine
 			
 			addEventListener(Event.ADDED_TO_STAGE, added);
 			addEventListener(Event.REMOVED_FROM_STAGE, removed);
+			
+			this.x = position.x;
+			this.y = position.y;
 		}
 		
 		protected function removed(e:Event):void 
