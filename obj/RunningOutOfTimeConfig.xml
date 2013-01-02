@@ -16,7 +16,7 @@
     </define>
     <define append="true">
       <name>CONFIG::timeStamp</name>
-      <value>'18-12-2012'</value>
+      <value>'02-01-2013'</value>
     </define>
     <verbose-stacktraces>true</verbose-stacktraces>
     <source-path append="true">
@@ -28,9 +28,9 @@
     <path-element>C:\Users\Jeppe\Projekter\RunningOutOfTime\src\kosmobot\games\root\Main.as</path-element>
   </file-specs>
   <default-background-color>#FFFFFF</default-background-color>
-  <default-frame-rate>30</default-frame-rate>
+  <default-frame-rate>60</default-frame-rate>
   <default-size>
-    <width>320</width>
-    <height>240</height>
+    <width>800</width>
+    <height>480</height>
   </default-size>
 </flex-config>

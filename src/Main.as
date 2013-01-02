@@ -1,8 +1,7 @@
-package kosmobot.games.root
+﻿package
 {
 	import flash.display.GradientType;
 	import flash.display.Sprite;
-	import flash.display.StageAlign;
 	import flash.display.StageQuality;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
@@ -16,7 +15,6 @@ package kosmobot.games.root
 	import flash.system.fscommand;
 	import kosmobot.games.platform.collision.AbstractCollisionManager;
 	import kosmobot.games.platform.collision.Shape;
-	import kosmobot.games.platform.Envioronment;
 	import kosmobot.games.platform.events.TileEvent;
 	import kosmobot.games.platform.performance.Graph;
 	import kosmobot.games.platform.tiles.ImageTile;
@@ -38,29 +36,26 @@ package kosmobot.games.root
 		private var frameCount : int = 0;
 		
 		private var character : TileBase;
-		private var envioronment;
 		
 		public function Main():void
 		{
 			stage.quality = StageQuality.LOW;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			
-			scene = new Scene(2000, 2000, 670, 350);
-
-			envioronment = new Envioronment();
+			scene = new Scene(2000, 2000, 420, 340);
 			
-			view = new View(scene, envioronment, 100, 100);
+			view = new View(scene, 100, 100);
 			addChild(view);
 			
 			var border : Sprite = new Sprite();
 			border.graphics.beginFill(0x000000, 0.8);
-			border.graphics.drawRect(0, 0, 800, 480);
+			border.graphics.drawRect(0, 0, 620, 540);
 			border.graphics.lineStyle(0, 0xFFFFFF, 1);
-			border.graphics.drawRect(100, 100, 670, 350);
+			border.graphics.drawRect(100, 100, 420, 340);
 			border.graphics.endFill();
 			addChild(border);
 			
-			var graph : Graph = new Graph();
+			var graph : Graph = new flash.display.Graphicsh();
 			addChild(graph);
 			Graph.createMessure("collision", 0x0000FF);
 			Graph.createMessure("tileEngine", 0x00FF00);
@@ -74,9 +69,9 @@ package kosmobot.games.root
 			
 			
 			var matrix : Matrix = new Matrix();
-			matrix.createGradientBox(670, 350, Math.PI * 0.5, 100, 100);
+			matrix.createGradientBox(420, 340, Math.PI * 0.5, 100, 100);
 			graphics.beginGradientFill(GradientType.LINEAR, [0x000000, 0xCCEEFF], [1, 0.8], [0x00, 0xFF], matrix);
-			graphics.drawRect(100, 100, 670, 350);
+			graphics.drawRect(100, 100, 420, 340);
 			graphics.endFill();
 			
 			/*
@@ -88,36 +83,35 @@ package kosmobot.games.root
 			*/
 			for (var r : uint = 0; r < 4; r++)
 			{
-				var tile : ImageTile = new ImageTile(100 + (50 * r), 214, 25, 100);
+				var tile : ImageTile = new ImageTile(100 + (40 * r), 170, 25, 100);
 				scene.addTile(tile);
 			}
 			
 			character = new TileBase(350, 0, 30, 40);
 			scene.addTile(character, true);
 			
-			for (var i : int = 0; i < 100; i++ )
-			{
-				var floor : ImageTile = new ImageTile(100*i, 270, 100, 15, "gfx/vent.png", true);
-				floor.fixed = true;
-				scene.addTile(floor);
-			}
+			var floor : ImageTile = new ImageTile(220, 655, 450, 15, "vent.png", true);
+			floor.fixed = true;
+			scene.addTile(floor);
 			
-			/*
-			var stopper : ImageTile = new ImageTile(225, 40, 35, 35, "gfx/box.png");
+			var floor2 : ImageTile = new ImageTile(300, 705, 600, 15, "vent.png", true);
+			floor2.fixed = true;
+			scene.addTile(floor2);
+			
+			var stopper : ImageTile = new ImageTile(225, 40, 35, 35, "box.png");
 			stopper.fixed = false;
 			stopper.shape = Shape.RIGID_BODY;
 			scene.addTile(stopper);
 			
-			var stopper2 : ImageTile = new ImageTile(325, 40, 35, 35, "gfx/box.png");
+			var stopper2 : ImageTile = new ImageTile(325, 40, 35, 35, "box.png");
 			stopper2.fixed = false;
 			stopper2.shape = Shape.RIGID_BODY;
 			scene.addTile(stopper2);
 			
-			var ball : ImageTile = new ImageTile(142, 50, 40, 40, "gfx/tilted_barrel.png");
+			var ball : ImageTile = new ImageTile(142, 50, 40, 40, "tilted_barrel.png");
 			ball.fixed = false;
 			ball.shape = Shape.WHEEL;
 			scene.addTile(ball);
-			*/
 			
 			frameTime = getTimer();
 			addEventListener(Event.ENTER_FRAME, enterFrame);
